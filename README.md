@@ -5,6 +5,6 @@ So I decided to create this image. Simple like this.
 
 To execute it:
 
-$ docker run --rm -it  -v -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix leandrosansilva/gnome-builder
+$ docker run --rm -it -e DISPLAY=$DISPLAY -v /tmp/.X11-unix:/tmp/.X11-unix leandrosansilva/gnome-builder
 
 PS: This image is ***huge***, about 2GB in size.
