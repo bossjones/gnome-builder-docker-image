@@ -21,30 +21,31 @@ RUN dnf -y update && \
                    libxml-2.0 \
                    pangoft2 && \
     dnf -y install git gcc-c++ gjs gjs-devel libpeas-devel desktop-file-utils \
+    openssl-devel python-devel python-pip gcc libffi-devel \
     gtksourceview3-devel libgit2-devel libgit2-glib-devel clang-devel file glibc-common vala-devel vala llvm-devel vte-devel \
     vte291-devel vala-tools redhat-rpm-config sudo; \
     dnf groupinstall -y development-libs development-tools gnome-software-development; \
-    dnf clean all; git clone git://git.gnome.org/gnome-builder && \
     git clone https://github.com/bossjones/hacker-shellscripts.git && \
-    sed 's,sudo,,g' -i hacker-shellscripts/fedora/jhbuild-sysdeps--install.sh && \
+    sed 's,sudo,,g' -i hacker-shellscripts/fedora/jhbuild-sysdeps--install-all.sh && \
     bash hacker-shellscripts/fedora/jhbuild-sysdeps--install.sh && \
     echo "LANG=en_US.UTF-8" > /etc/locale.conf && \
     echo "LC_ALL=en_US.UTF-8" >> /etc/locale.conf && \
     dnf install langpacks-en.noarch utf8proc.x86_64 glibc-all-langpacks utf8proc.x86_64 glibc-locale-source perl-Unicode-CheckUTF8.x86_64 -y && \
     localedef -v -c -i en_US -f UTF-8 en_US.UTF-8; \
-    dnf -y install openssl-devel python-devel python-pip gcc libffi-devel;\
     pip install --upgrade pip; \
-    pip install pyopenssl ndg-httpsclient pyasn1; \
+    pip install pyopenssl ndg-httpsclient pyasn1 && \
     rm -rf ~/.pip; \
     dnf clean all;
-    # cd .. && \
-    # cd gnome-builder && \
-    # ./autogen.sh --prefix=/usr/ --enable-clang-plugin=yes --enable-terminal-plugin=yes \
-    # --enable-vala-pack-plugin=yes --enable-xml-pack-plugin=yes --enable-html-preview-plugin=yes \
-    # --enable-html-completion-plugin=yes --enable-introspection=yes --enable-autotools-plugin=yes \
-    # --enable-symbol-tree-plugin=yes --enable-python-pack-plugin && \
-    # make -j1 && \
-    # make install
+    
+    
+    RUN git clone git://git.gnome.org/gnome-builder && \
+        cd gnome-builder && \
+        ./autogen.sh --prefix=/usr/ --enable-clang-plugin=yes --enable-terminal-plugin=yes \
+        --enable-vala-pack-plugin=yes --enable-xml-pack-plugin=yes --enable-html-preview-plugin=yes \
+        --enable-html-completion-plugin=yes --enable-introspection=yes --enable-autotools-plugin=yes \
+        --enable-symbol-tree-plugin=yes --enable-python-pack-plugin && \
+        make -j1 && \
+        make install; echo "[Might have to rebuild]"
 
     # # Drop suid
     # RUN find / -xdev -perm /6000 -type f -print0 | xargs -0 chmod -6000
@@ -110,6 +111,6 @@ RUN dnf -y update && \
 
 RUN useradd -m -d /home/developer developer
 
-USER developer
+# USER developer
 
 # ENTRYPOINT ["/usr/bin/gnome-builder"]
